@@ -1,16 +1,29 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useState } from 'react';
 
 import Card from '../../../common/components/UIElements/Card';
 import Button from '../../../common/components/FormElements/Button';
 import Modal from '../../../common/components/UIElements/Modal';
+import Map from '../../../common/components/UIElements/Map';
 import './LocationItem.css';
+import { AuthContext } from '../../../common/context/auth-context';
 
 const LocationItem = props => {
+    const auth = useContext(AuthContext);
+
     const [showMap, setShowMap] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     const handleOpenMap = () => { setShowMap(true) };
     const handleCloseMap = () => { setShowMap(false) };
+
+    const handleShowDeleteWarning = () => { setShowDeleteModal(true) };
+    const handleCloseDeleteWarning = () => { setShowDeleteModal(false) }
+
+    const handleDeleteLocation = () => {
+        console.log('LOCATION DELETED');
+        handleCloseDeleteWarning();
+    }
 
     return <React.Fragment>
         <Modal show={showMap}
@@ -20,8 +33,20 @@ const LocationItem = props => {
                footerClass='place-item__modal-actions' 
                footer={<Button onClick={handleCloseMap}>CLOSE</Button>}>
             <div className='map-container'>
-                <h2>The Map</h2>
+                <Map center={props.coordinates} zoom={16}/>
             </div>
+        </Modal>
+        <Modal show={showDeleteModal}
+               onCancel={handleCloseDeleteWarning}
+               header='Are you sure?'
+               footerClass='place-item__modal-actions'
+               footer={
+                    <React.Fragment>
+                        <Button inverse onClick={handleCloseDeleteWarning}>Cancel</Button>
+                        <Button danger onClick={handleDeleteLocation}>Delete</Button>
+                    </React.Fragment>
+               }>
+            <p>Really delete this location? This operation's consequences will follow you forever..</p>
         </Modal>
         <li className='place-item'>
             <Card className='place-item__content'>
@@ -35,8 +60,8 @@ const LocationItem = props => {
                 </div>
                 <div className='place-item__actions'>
                     <Button inverse onClick={handleOpenMap}>VIEW ON MAP</Button>
-                    <Button to={`locations/${props.id}`}>EDIT</Button>
-                    <Button danger>DELETE</Button>
+                    {auth.isLoggedIn && (<Button to={`/locations/${props.id}`}>EDIT</Button>)}
+                    {auth.isLoggedIn && (<Button danger onClick={handleShowDeleteWarning}>DELETE</Button>)}  
                 </div>
             </Card> 
         </li>

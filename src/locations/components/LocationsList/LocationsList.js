@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
  
 import LocationItem from '../LocationItem/LocationItem';
 import Card from '../../../common/components/UIElements/Card';
+import Button from '../../../common/components/FormElements/Button';
 import './LocationsList.css';
 
 const LocationsList = props => {
@@ -12,7 +13,7 @@ const LocationsList = props => {
                 <h2>No locations were found. Try adding one!</h2>
                 <Link to='/locations/new'>
                     <div className='place-item__actions'>
-                        <button>ADD LOCATION</button>
+                        <Button to='/locations/new'>SHARE LOCATION</Button>
                     </div>
                 </Link>
             </Card>
