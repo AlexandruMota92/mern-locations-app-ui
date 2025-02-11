@@ -21,7 +21,7 @@ const LocationItem = props => {
     const handleCloseDeleteWarning = () => { setShowDeleteModal(false) }
 
     const handleDeleteLocation = () => {
-        console.log('LOCATION DELETED');
+        console.log('LOCATION DELETED'); // to replace with actual delete function
         handleCloseDeleteWarning();
     }
 

@@ -4,7 +4,6 @@ import './Map.css';
 
 const Map = props => { 
     const mapRef = useRef();
-    console.log(mapRef.current);
     const { center, zoom } = props;
 
     useEffect(() => {

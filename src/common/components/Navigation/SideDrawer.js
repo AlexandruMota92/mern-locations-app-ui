@@ -11,8 +11,7 @@ const SideDrawer = props => {
         // </CSSTransition>
     );
     
-    return ReactDOM.createPortal(content, document.getElementById('drawer-hook'));
-    
+    return ReactDOM.createPortal(content, document.getElementById('drawer-hook'));   
 }
 
 export default SideDrawer;

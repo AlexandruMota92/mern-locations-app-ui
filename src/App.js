@@ -31,8 +31,6 @@ const App = () => {
         <Route path="/:userId/locations" exact><UserLocations/></Route>
         <Route path="/locations/new" exact><NewLocation/></Route>
         <Route path="/locations/:locationId"><UpdateLocation/></Route>
-
-        <Route path="/locations/Unnumefrumos" exact><Unnumefrumos/></Route>
         <Redirect to="/" />
       </Switch>
     )
