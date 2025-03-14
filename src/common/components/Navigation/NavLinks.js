@@ -10,8 +10,9 @@ const NavLinks = () => {
     return <ul className='nav-links'>
         <li><NavLink to='/' exact>All USERS</NavLink></li>
         {
+            //TODO: clicking MY PLACES when on that page sends to / for some reason
            auth.isLoggedIn && (
-            <li><NavLink to='/1/locations'>MY PLACES</NavLink></li>
+            <li><NavLink to={`${auth.userId}/locations`}>MY PLACES</NavLink></li>
            )
         }
         {

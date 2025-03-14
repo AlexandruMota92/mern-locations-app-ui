@@ -7,9 +7,13 @@ import Modal from '../../../common/components/UIElements/Modal';
 import Map from '../../../common/components/UIElements/Map';
 import './LocationItem.css';
 import { AuthContext } from '../../../common/context/auth-context';
+import useHttpClient from '../../../common/hooks/http-hook';
+import LoadingSpinner from '../../../common/components/UIElements/LoadingSpinner';
+import ErrorModal from '../../../common/components/UIElements/ErrorModal';
 
 const LocationItem = props => {
     const auth = useContext(AuthContext);
+    const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
     const [showMap, setShowMap] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -18,14 +22,27 @@ const LocationItem = props => {
     const handleCloseMap = () => { setShowMap(false) };
 
     const handleShowDeleteWarning = () => { setShowDeleteModal(true) };
-    const handleCloseDeleteWarning = () => { setShowDeleteModal(false) }
+    const handleCloseDeleteWarning = () => { setShowDeleteModal(false) };
 
-    const handleDeleteLocation = () => {
-        console.log('LOCATION DELETED'); // to replace with actual delete function
+    const handleDeleteLocation = async () => {
+        try {
+            await sendRequest(
+                `http://localhost:5000/api/locations/${props.id}`,
+                'DELETE',
+                null, //body
+                {
+                    Authorization: 'Bearer ' + auth.token
+                }
+            );
+            props.onDelete(props.id);
+        } catch (err) {
+            //
+        }
         handleCloseDeleteWarning();
-    }
+    };
 
     return <React.Fragment>
+        <ErrorModal error={error} onClear={clearError} />
         <Modal show={showMap}
                onCancel={handleCloseMap} 
                header={props.address} 
@@ -50,8 +67,9 @@ const LocationItem = props => {
         </Modal>
         <li className='place-item'>
             <Card className='place-item__content'>
+                {isLoading && <LoadingSpinner asOverlay/>}
                 <div className='place-item__image'>
-                    <img src={props.image} alt={props.title}/>
+                    <img src={`http://localhost:5000/${props.image}`} alt={props.title}/>
                 </div>
                 <div className='place-item__info'>
                     <h2>{props.title}</h2>
@@ -60,8 +78,8 @@ const LocationItem = props => {
                 </div>
                 <div className='place-item__actions'>
                     <Button inverse onClick={handleOpenMap}>VIEW ON MAP</Button>
-                    {auth.isLoggedIn && (<Button to={`/locations/${props.id}`}>EDIT</Button>)}
-                    {auth.isLoggedIn && (<Button danger onClick={handleShowDeleteWarning}>DELETE</Button>)}  
+                    {auth.isLoggedIn && auth.userId === props.creatorId && (<Button type="to" to={`/locations/${props.id}`}>EDIT</Button>)}
+                    {auth.isLoggedIn && auth.userId === props.creatorId && (<Button danger onClick={handleShowDeleteWarning}>DELETE</Button>)}  
                 </div>
             </Card> 
         </li>

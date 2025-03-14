@@ -19,11 +19,11 @@ const UserList = props => {
                 key={user.key}
                 id={user.id}
                 image={user.image}
-                name={user.name}
-                locationsCount={user.locations}
+                name={user.username}
+                locationsCount={user.locations?.length}
             />
         ))
-    } </ul>
+    }</ul>
 };
 
 export default UserList;
