@@ -1,17 +1,41 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import UserList from '../components/userList/UserList';
+import ErrorModal from '../../common/components/UIElements/ErrorModal';
+import LoadingSpinner from '../../common/components/UIElements/LoadingSpinner';
+import useHttpClient from '../../common/hooks/http-hook';
 
 const Users = () => {
-    const USERS = [
-        {id:'1', name:'user 1', image: 'https://d197nivf0nbma8.cloudfront.net/uploads/2014/09/Guy-David-expert-2021-408x452.webp', locations:3},
-        {id:'2', name:'user 2', image: 'https://d197nivf0nbma8.cloudfront.net/uploads/2014/09/Guy-David-expert-2021-408x452.webp', locations:4},
-        {id:'3', name:'user 3', image: 'https://d197nivf0nbma8.cloudfront.net/uploads/2014/09/Guy-David-expert-2021-408x452.webp', locations:1},
-        {id:'4', name:'user 4', image: 'https://d197nivf0nbma8.cloudfront.net/uploads/2014/09/Guy-David-expert-2021-408x452.webp', locations:3},
-        {id:'5', name:'user 5', image: 'https://d197nivf0nbma8.cloudfront.net/uploads/2014/09/Guy-David-expert-2021-408x452.webp', locations:8},
-    ];
+    const [loadedUsers, setLoadedUsers] = useState([]);
+    const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
-    return <UserList items={USERS} />;
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const responseData = await sendRequest('http://localhost:5000/api/users');
+    
+                setLoadedUsers(responseData.users);
+            } catch (err) {
+                //
+            }
+        };
+
+        fetchUsers();
+    }, [sendRequest]);
+
+    return (<React.Fragment>
+        <ErrorModal error={error} onClear={clearError}/>
+        {
+            isLoading && (
+                <div className="center">
+                    <LoadingSpinner />
+                </div>
+            )
+        }
+        {
+            !isLoading && <UserList items={loadedUsers} />
+        }
+    </React.Fragment>);
 }
 
 export default Users;

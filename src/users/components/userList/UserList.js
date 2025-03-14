@@ -1,14 +1,15 @@
 import React from 'react';
 
-import './UserList.css';
 import UserItem from '../userItems/UserItem';
+import Card from '../../../common/components/UIElements/Card';
+import './UserList.css';
 
 const UserList = props => {
     if(props.items.length === 0) {
         return(
-            <div>
+            <Card>
                 <h2>No Users Found!</h2>
-            </div>
+            </Card>
         )
     }
 
@@ -18,11 +19,11 @@ const UserList = props => {
                 key={user.key}
                 id={user.id}
                 image={user.image}
-                name={user.name}
-                locationsCount={user.locations}
+                name={user.username}
+                locationsCount={user.locations?.length}
             />
         ))
-    } </ul>
+    }</ul>
 };
 
 export default UserList;
